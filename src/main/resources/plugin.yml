@@ -10,3 +10,4 @@ author: Yingyya
 libraries:
   - com.zaxxer:HikariCP:5.0.1
   - org.rocksdb:rocksdbjni:6.10.2
+  - com.google.code.gson:gson:2.10
