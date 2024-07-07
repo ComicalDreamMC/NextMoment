@@ -15,6 +15,7 @@ public class NextMomentUtils {
 
 	public static void printToCommandSender(@NotNull CommandSender sender, @NotNull Plugin plugin) {
 		PluginDescriptionFile description = plugin.getDescription();
+		sender.sendMessage("Name: " + description.getName());
 		sender.sendMessage("Description: " + description.getDescription());
 		sender.sendMessage("Author: " + description.getAuthors());
 		sender.sendMessage("Version: " + description.getVersion());

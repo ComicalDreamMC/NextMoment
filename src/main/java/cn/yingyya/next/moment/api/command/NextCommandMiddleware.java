@@ -61,7 +61,11 @@ public class NextCommandMiddleware<T extends NextPlugin<T>> extends Command {
 		}
 		NextCommand<T> matchesCommand = getMatchesCommand(command, args);
 		if (matchesCommand == null) {
-			return Collections.emptyList();
+			List<String> strings = command.onTabComplete(sender, args);
+			if (strings.isEmpty()) {
+				return Collections.emptyList();
+			}
+			return strings;
 		}
 		Set<NextCommand<T>> children = matchesCommand.getChildren();
 		List<String> strings = matchesCommand.onTabComplete(sender, args);
