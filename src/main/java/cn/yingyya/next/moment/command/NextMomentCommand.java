@@ -53,7 +53,7 @@ public class NextMomentCommand extends NextCommand<NextMoment> {
 
 	@Override
 	public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String[] args) {
-		if (args.length == 0) {
+		if (args.length == 1) {
 			return List.of("plugins", "version");
 		}
 		return List.of();
