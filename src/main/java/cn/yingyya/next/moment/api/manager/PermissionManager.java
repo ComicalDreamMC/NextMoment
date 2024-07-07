@@ -9,13 +9,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PermissionManager<T extends NextPlugin<T>> extends Manager{
+public class PermissionManager<T extends NextPlugin<T>> extends Manager<T> {
 
-	private final T plugin;
 	private final List<Permission> permissions;
 
 	public PermissionManager(T plugin) {
-		this.plugin = plugin;
+		super(plugin);
 		this.permissions = new ArrayList<>();
 	}
 
@@ -33,10 +32,11 @@ public class PermissionManager<T extends NextPlugin<T>> extends Manager{
 
 	@Override
 	public void onLoad() {
+		T plugin = getPlugin();
 		for (Permission permission : permissions) {
 			if (plugin.getPluginManager().getPermission(permission.getName()) == null) {
 				plugin.getPluginManager().addPermission(permission);
-				plugin.getNextLogger().info("Added permission " + permission.getName() + " to plugin " + plugin.getName());
+				plugin.getLogger().info("Added permission " + permission.getName() + " to plugin " + plugin.getName());
 			}
 		}
 	}

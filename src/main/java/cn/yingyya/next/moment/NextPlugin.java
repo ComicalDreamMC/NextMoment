@@ -1,7 +1,6 @@
 package cn.yingyya.next.moment;
 
 import cn.yingyya.next.moment.api.config.ConfigOption;
-import cn.yingyya.next.moment.api.logger.NextLogger;
 import cn.yingyya.next.moment.api.manager.CommandManager;
 import cn.yingyya.next.moment.api.manager.DataBaseManager;
 import cn.yingyya.next.moment.api.manager.EventManager;
@@ -25,10 +24,10 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 
 	public abstract void onNextUnload();
 
+	@NotNull
 	protected abstract T getPluginInstance();
 
 	private EventManager<T> eventManager;
-	private NextLogger<T> nextLogger;
 	private CommandManager<T> commandManager;
 	private PermissionManager<T> permissionManager;
 	private DataBaseManager<T> dataBaseManager;
@@ -36,7 +35,6 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		nextLogger = new NextLogger<>(getPluginInstance());
 		dataBaseManager = new DataBaseManager<>(getPluginInstance());
 		permissionManager = new PermissionManager<>(getPluginInstance());
 		eventManager = new EventManager<>(getPluginInstance());
@@ -114,9 +112,9 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 		configMap.put(clazz, Pair.create(file, configuration));
 		try {
 			injectionConfigOfObject(clazz, configuration);
-			getNextLogger().info("reloaded configuration for " + clazz.getName());
+			getLogger().info("reloaded configuration for " + clazz.getName());
 		} catch (IllegalAccessException e) {
-			getNextLogger().info("failed to reload configuration for " + clazz.getName());
+			getLogger().info("failed to reload configuration for " + clazz.getName());
 			e.printStackTrace();
 		}
 	}
@@ -129,7 +127,7 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 		try {
 			configuration.save(file);
 		} catch (IOException e) {
-			getNextLogger().info("Save config failed in file " + file.getAbsolutePath());
+			getLogger().info("Save config failed in file " + file.getAbsolutePath());
 			e.printStackTrace();
 		}
 	}
@@ -149,10 +147,6 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 
 	public PluginManager getPluginManager() {
 		return this.getServer().getPluginManager();
-	}
-
-	public NextLogger<T> getNextLogger() {
-		return nextLogger;
 	}
 
 	public CommandManager<T> getCommandManager() {

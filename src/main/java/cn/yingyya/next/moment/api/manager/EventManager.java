@@ -8,12 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EventManager<T extends NextPlugin<T>> extends Manager {
-	private final T plugin;
+public class EventManager<T extends NextPlugin<T>> extends Manager<T> {
 	private final Set<Listener> listeners = new HashSet<>();
 
 	public EventManager(@NotNull T plugin) {
-		this.plugin = plugin;
+		super(plugin);
 	}
 
 	public void registerEventListener(@NotNull Listener listener) {
@@ -22,7 +21,7 @@ public class EventManager<T extends NextPlugin<T>> extends Manager {
 
 	@Override
 	public void onLoad() {
-		listeners.forEach(listener -> plugin.getPluginManager().registerEvents(listener, plugin));
+		listeners.forEach(listener -> getPlugin().getPluginManager().registerEvents(listener, getPlugin()));
 	}
 
 	@Override
