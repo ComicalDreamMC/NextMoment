@@ -1,0 +1,12 @@
+name: NextMoment
+version: '${project.version}'
+main: cn.yingyya.next.moment.NextMoment
+api-version: '1.18'
+load: STARTUP
+website: www.yingyya.cn
+description: Custom prerequisite plugin for Bukkit.
+author: Yingyya
+
+libraries:
+  - com.zaxxer:HikariCP:5.0.1
+  - org.rocksdb:rocksdbjni:6.10.2
