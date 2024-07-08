@@ -19,4 +19,8 @@ public class NextMoment extends NextPlugin<NextMoment> {
 	protected @NotNull NextMoment getPluginInstance() {
 		return this;
 	}
+
+	public String test() {
+		return "success NextPlugin!";
+	}
 }
