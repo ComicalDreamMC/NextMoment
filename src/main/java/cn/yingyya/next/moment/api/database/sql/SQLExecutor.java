@@ -26,5 +26,5 @@ public abstract class SQLExecutor<T> {
 	}
 
 	@NotNull
-	public abstract T execute(@NotNull DataConnector<HikariDataSource> connector);
+	public abstract T execute(@NotNull DataConnector<?> connector);
 }

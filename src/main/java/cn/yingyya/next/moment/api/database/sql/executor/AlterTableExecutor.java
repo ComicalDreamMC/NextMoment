@@ -69,12 +69,13 @@ public class AlterTableExecutor extends SQLExecutor<Void> {
 	}
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.columns.isEmpty()) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
 
 		if (this.type == Type.ADD_COLUMN) {
 			this.columns.forEach(value -> {
-				if (SQLExecute.hasColumn(connector.dataSource(), this.getTable(), value.column())) return;
+				if (SQLExecute.hasColumn(dataSource, this.getTable(), value.column())) return;
 
 				String sql = "ALTER TABLE " + this.getTable() + " ADD "
 						+ value.column().name() + " " + value.column().formatType(this.dataBaseType);
@@ -82,23 +83,23 @@ public class AlterTableExecutor extends SQLExecutor<Void> {
 					sql = sql + " DEFAULT '" + value.value() + "'";
 				}
 
-				SQLExecute.executeStatement(connector.dataSource(), sql);
+				SQLExecute.executeStatement(dataSource, sql);
 			});
 		} else if (this.type == Type.RENAME_COLUMN) {
 			this.columns.forEach(value -> {
-				if (!SQLExecute.hasColumn(connector.dataSource(), this.getTable(), value.column())) return;
+				if (!SQLExecute.hasColumn(dataSource, this.getTable(), value.column())) return;
 
 				String sql = "ALTER TABLE " + this.getTable() + " RENAME COLUMN " + value.column().name() + " TO " + value.value();
 
-				SQLExecute.executeStatement(connector.dataSource(), sql);
+				SQLExecute.executeStatement(dataSource, sql);
 			});
 		} else if (this.type == Type.DROP_COLUMN) {
 			this.columns.forEach(value -> {
-				if (!SQLExecute.hasColumn(connector.dataSource(), this.getTable(), value.column())) return;
+				if (!SQLExecute.hasColumn(dataSource, this.getTable(), value.column())) return;
 
 				String sql = "ALTER TABLE " + this.getTable() + " DROP COLUMN " + value.column().name();
 
-				SQLExecute.executeStatement(connector.dataSource(), sql);
+				SQLExecute.executeStatement(dataSource, sql);
 			});
 		}
 		return null;

@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +34,7 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 	private PermissionManager<T> permissionManager;
 	private DataBaseManager<T> dataBaseManager;
 	private final LinkedHashMap<Class<?>, Pair<File, YamlConfiguration>> configMap = new LinkedHashMap<>();
+	private static final HashMap<Class<?>, NextPlugin<?>> pluginMap = new HashMap<>();
 
 	@Override
 	public void onEnable() {
@@ -42,6 +44,7 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 		commandManager = new CommandManager<>(getPluginInstance());
 
 		onNextLoad();
+		pluginMap.put(getPluginInstance().getClass(), getPluginInstance());
 
 		// manager load
 		this.dataBaseManager.onLoad();
@@ -53,6 +56,7 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		onNextUnload();
+		pluginMap.remove(getPluginInstance().getClass());
 
 		// manager unload
 		this.eventManager.onUnload();
@@ -60,6 +64,17 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 		this.permissionManager.onUnload();
 
 		this.dataBaseManager.onUnload();
+	}
+
+	@Nullable
+	public static <T extends NextPlugin<T>> NextPlugin<T> getNextPlugin(Class<T> clazz) {
+		if (clazz == null) {
+			return null;
+		}
+		if (!pluginMap.containsKey(clazz)) {
+			return null;
+		}
+		return (NextPlugin<T>) pluginMap.get(clazz);
 	}
 
 	public void loadNextConfig(@NotNull Class<?> clazz) {

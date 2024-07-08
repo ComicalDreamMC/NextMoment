@@ -42,14 +42,15 @@ public class InsertQueryExecutor extends SQLExecutor<Void> {
 
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.values.isEmpty()) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
 
 		String columns = this.values.stream().map(SQLValue::column).map(SQLColumn::getNameEscaped).collect(Collectors.joining(","));
 		String values = this.values.stream().map(value -> "?").collect(Collectors.joining(","));
 		String sql = INSERT_INTO + " " + this.getTable() + "(" + columns + ") " + VALUES + "(" + values + ")";
 		List<String> value = this.values.stream().map(SQLValue::value).toList();
-		SQLExecute.executeStatement(connector.dataSource(), sql, value);
+		SQLExecute.executeStatement(dataSource, sql, value);
 		return null;
 	}
 }

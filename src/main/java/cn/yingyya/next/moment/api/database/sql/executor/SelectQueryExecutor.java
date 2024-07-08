@@ -29,8 +29,9 @@ public class SelectQueryExecutor<T> extends SQLExecutor<List<T>> {
 	}
 
 	@Override
-	public @NotNull List<T> execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull List<T> execute(@NotNull DataConnector<?> connector) {
 		if (this.columns.isEmpty()) return Collections.emptyList();
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return Collections.emptyList();
 
 		String columns = this.columns.stream().map(SQLColumn::getNameEscaped).collect(Collectors.joining(","));
 		String wheres = this.wheres.stream().map(where -> where.value().column().getNameEscaped() + " " + where.type().getOperator() + " ?")
@@ -38,7 +39,7 @@ public class SelectQueryExecutor<T> extends SQLExecutor<List<T>> {
 		String sql = "SELECT " + columns + " FROM " + this.getTable() + (wheres.isEmpty() ? "" : " WHERE " + wheres);
 		List<String> where = this.wheres.stream().map(SQLCondition::value).map(SQLValue::value).toList();
 
-		return SQLExecute.executeQuery(connector.dataSource(), sql, where, dataFunction, amount);
+		return SQLExecute.executeQuery(dataSource, sql, where, dataFunction, amount);
 	}
 
 	@NotNull

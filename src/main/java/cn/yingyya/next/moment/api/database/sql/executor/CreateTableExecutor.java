@@ -44,8 +44,9 @@ public class CreateTableExecutor extends SQLExecutor<Void> {
 	}
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.columns.isEmpty()) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
 
 		String id = "`id` " + ColumnFormat.INTEGER.format(this.type, 11);
 
@@ -60,7 +61,7 @@ public class CreateTableExecutor extends SQLExecutor<Void> {
 				.collect(Collectors.joining(", "));
 		String sql = "CREATE TABLE IF NOT EXISTS " + this.getTable() + "(" + columns + ");";
 
-		SQLExecute.executeStatement(connector.dataSource(), sql);
+		SQLExecute.executeStatement(dataSource, sql);
 		return null;
 	}
 }

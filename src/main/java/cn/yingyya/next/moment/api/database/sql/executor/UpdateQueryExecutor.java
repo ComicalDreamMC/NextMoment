@@ -25,8 +25,9 @@ public class UpdateQueryExecutor extends SQLExecutor<Void> {
 	}
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.values.isEmpty()) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
 
 		String values = this.values.stream().map(value -> value.column().getNameEscaped() + " = ?")
 				.collect(Collectors.joining(","));
@@ -36,7 +37,7 @@ public class UpdateQueryExecutor extends SQLExecutor<Void> {
 
 		List<String> value = this.values.stream().map(SQLValue::value).toList();
 		List<String> where = this.wheres.stream().map(SQLCondition::value).map(SQLValue::value).toList();
-		SQLExecute.executeStatement(connector.dataSource(), sql, value, where);
+		SQLExecute.executeStatement(dataSource, sql, value, where);
 		return null;
 	}
 

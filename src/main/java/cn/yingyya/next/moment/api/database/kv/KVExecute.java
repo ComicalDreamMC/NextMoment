@@ -13,11 +13,14 @@ public class KVExecute {
 
 	private final RocksDB db;
 
-	public KVExecute(@NotNull DataConnector<RocksDB> dataConnector) {
-		this.db = dataConnector.dataSource();
+	public KVExecute(@NotNull DataConnector<?> dataConnector) {
+		if (dataConnector.dataSource() instanceof RocksDB) {
+			this.db = (RocksDB) dataConnector.dataSource();
+		}
+		throw new IllegalStateException("DataConnector is not a LevelDB instance");
 	}
 
-	public static KVExecute of(@NotNull DataConnector<RocksDB> dataConnector) {
+	public static KVExecute of(@NotNull DataConnector<?> dataConnector) {
 		return new KVExecute(dataConnector);
 	}
 

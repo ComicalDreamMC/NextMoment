@@ -31,9 +31,10 @@ public class RenameTableExecutor extends SQLExecutor<Void> {
 
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.renameTo == null || this.renameTo.isEmpty()) return null;
-		if (!SQLExecute.hasTable(connector.dataSource(), this.getTable())) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
+		if (!SQLExecute.hasTable(dataSource, this.getTable())) return null;
 
 		StringBuilder sql = new StringBuilder();
 		if (this.type == DataBaseType.MYSQL) {
@@ -41,7 +42,7 @@ public class RenameTableExecutor extends SQLExecutor<Void> {
 		} else {
 			sql.append("ALTER TABLE ").append(this.getTable()).append(" RENAME TO ").append(this.renameTo);
 		}
-		SQLExecute.executeStatement(connector.dataSource(), sql.toString());
+		SQLExecute.executeStatement(dataSource, sql.toString());
 		return null;
 	}
 }

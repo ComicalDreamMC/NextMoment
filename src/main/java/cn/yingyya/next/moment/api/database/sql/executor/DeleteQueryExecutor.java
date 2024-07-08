@@ -41,14 +41,16 @@ public class DeleteQueryExecutor extends SQLExecutor<Void> {
 	}
 
 	@Override
-	public @NotNull Void execute(@NotNull DataConnector<HikariDataSource> connector) {
+	public @NotNull Void execute(@NotNull DataConnector<?> connector) {
 		if (this.wheres.isEmpty()) return null;
+		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return null;
+
 		String whereCols = this.wheres.stream()
 				.map(where -> where.value().column().getNameEscaped() + " " + where.type().getOperator() + " ?")
 				.collect(Collectors.joining(" AND "));
 		String sql = "DELETE FROM " + this.getTable() + (whereCols.isEmpty() ? "" : " WHERE " + whereCols);
 		List<String> value = this.wheres.stream().map(SQLCondition::value).map(SQLValue::value).toList();
-		SQLExecute.executeStatement(connector.dataSource(), sql, value);
+		SQLExecute.executeStatement(dataSource, sql, value);
 		return null;
 	}
 }
