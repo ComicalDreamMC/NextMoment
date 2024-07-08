@@ -25,7 +25,7 @@ public class NextMomentUtils {
 	}
 
 	@Nullable
-	public UUID getPlayerRealUUID(Player player) {
+	public static UUID getPlayerRealUUID(Player player) {
 		String url = "https://api.mojang.com/users/profiles/minecraft/" + player.getName();
 		String response = HttpUtils.sendGET(url);
 		if (response == null) return null;
@@ -36,6 +36,14 @@ public class NextMomentUtils {
 		if (!player.getName().equals(json.get("name").getAsString())) {
 			return null;
 		}
-		return UUID.fromString(json.get("id").getAsString());
+		return UUID.fromString(formatUUID(json.get("id").getAsString()));
+	}
+
+	public static String formatUUID(@NotNull String uuidString) {
+		return uuidString.substring(0, 8) + "-" +
+				uuidString.substring(8, 12) + "-" +
+				uuidString.substring(12, 16) + "-" +
+				uuidString.substring(16, 20) + "-" +
+				uuidString.substring(20);
 	}
 }
