@@ -12,6 +12,11 @@ public class ExistsTableExecutor extends SQLExecutor<Boolean> {
 		super(table);
 	}
 
+	@NotNull
+	public static ExistsTableExecutor builder(@NotNull String table) {
+		return new ExistsTableExecutor(table);
+	}
+
 	@Override
 	public @NotNull Boolean execute(@NotNull DataConnector<?> connector) {
 		if (!(connector.dataSource() instanceof HikariDataSource dataSource)) return Boolean.FALSE;
