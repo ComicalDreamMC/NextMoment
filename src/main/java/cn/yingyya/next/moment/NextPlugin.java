@@ -27,7 +27,7 @@ public abstract class NextPlugin<T extends NextPlugin<T>> extends JavaPlugin {
 	public abstract void onNextUnload();
 
 	@NotNull
-	protected abstract T getPluginInstance();
+	public abstract T getPluginInstance();
 
 	private EventManager<T> eventManager;
 	private CommandManager<T> commandManager;
