@@ -6,7 +6,7 @@
 
     <groupId>cn.yingyya</groupId>
     <artifactId>NextMoment</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
     <url>https://github.com/Yingyya/NextMoment</url>
     <description>Custom prerequisite plugin for Bukkit.</description>

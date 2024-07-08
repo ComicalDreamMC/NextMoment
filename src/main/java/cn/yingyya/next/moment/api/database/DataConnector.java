@@ -20,7 +20,7 @@ public record DataConnector<T>(String name, DataBaseType type, T dataSource) {
 		this.name = name;
 	}
 
-	public static DataConnector<HikariDataSource> ofSQL(@NotNull String name, @NotNull DataBaseType type, @NotNull String driver, @NotNull String url, @Nullable String username, @Nullable String password) {
+	public static DataConnector<?> ofSQL(@NotNull String name, @NotNull DataBaseType type, @NotNull String driver, @NotNull String url, @Nullable String username, @Nullable String password) {
 		if (type == DataBaseType.LEVLEDB) {
 			throw new IllegalArgumentException("LevelDB database type not supported of HikariDataSource.");
 		}
@@ -39,7 +39,7 @@ public record DataConnector<T>(String name, DataBaseType type, T dataSource) {
 	}
 
 	@Nullable
-	public static DataConnector<RocksDB> ofLevelDB(@NotNull String name, @NotNull File file) {
+	public static DataConnector<?> ofLevelDB(@NotNull String name, @NotNull File file) {
 		if (file.isFile()) throw new IllegalArgumentException("LevelDB database type not supported of file, require directory.");
 		if (!file.exists()) {
 			file.getParentFile().mkdirs();
