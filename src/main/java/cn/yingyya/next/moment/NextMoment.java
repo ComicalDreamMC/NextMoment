@@ -16,7 +16,7 @@ public class NextMoment extends NextPlugin<NextMoment> {
 	}
 
 	@Override
-	protected @NotNull NextMoment getPluginInstance() {
+	public @NotNull NextMoment getPluginInstance() {
 		return this;
 	}
 
