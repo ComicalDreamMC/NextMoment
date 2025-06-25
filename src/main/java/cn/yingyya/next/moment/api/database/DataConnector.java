@@ -21,7 +21,7 @@ public record DataConnector<T>(String name, DataBaseType type, T dataSource) {
 	}
 
 	public static DataConnector<?> ofSQL(@NotNull String name, @NotNull DataBaseType type, @NotNull String driver, @NotNull String url, @Nullable String username, @Nullable String password) {
-		if (type == DataBaseType.LEVLEDB) {
+		if (type == DataBaseType.KV) {
 			throw new IllegalArgumentException("LevelDB database type not supported of HikariDataSource.");
 		}
 		HikariConfig config = new HikariConfig();
@@ -52,7 +52,7 @@ public record DataConnector<T>(String name, DataBaseType type, T dataSource) {
 				.setCompactionStyle(CompactionStyle.UNIVERSAL);
 		try {
 			RocksDB rocksDB = RocksDB.open(options, file.getAbsolutePath());
-			return new DataConnector<>(name, DataBaseType.SQLITE, rocksDB);
+			return new DataConnector<>(name, DataBaseType.KV, rocksDB);
 		} catch (RocksDBException e) {
 			e.printStackTrace();
 			return null;

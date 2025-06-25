@@ -1,5 +1,6 @@
 package cn.yingyya.next.moment.api.database.kv;
 
+import cn.yingyya.next.moment.api.database.DataBaseType;
 import cn.yingyya.next.moment.api.database.DataConnector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ public class KVExecute {
 	private final RocksDB db;
 
 	public KVExecute(@NotNull DataConnector<?> dataConnector) {
-		if (dataConnector.dataSource() instanceof RocksDB) {
+		if (dataConnector.dataSource() instanceof RocksDB && dataConnector.type() == DataBaseType.KV) {
 			this.db = (RocksDB) dataConnector.dataSource();
 		} else
 			throw new IllegalStateException("DataConnector is not a LevelDB instance");
