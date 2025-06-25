@@ -2,26 +2,54 @@ package cn.yingyya.next.moment.api.database.kv;
 
 import cn.yingyya.next.moment.api.database.DataConnector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.rocksdb.*;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class KVExecute {
+	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	private final RocksDB db;
 
 	public KVExecute(@NotNull DataConnector<?> dataConnector) {
 		if (dataConnector.dataSource() instanceof RocksDB) {
 			this.db = (RocksDB) dataConnector.dataSource();
-		}
-		throw new IllegalStateException("DataConnector is not a LevelDB instance");
+		} else
+			throw new IllegalStateException("DataConnector is not a LevelDB instance");
 	}
 
 	public static KVExecute of(@NotNull DataConnector<?> dataConnector) {
 		return new KVExecute(dataConnector);
+	}
+
+	public boolean set(String key, String value) {
+		return set(key.getBytes(DEFAULT_CHARSET), value.getBytes(DEFAULT_CHARSET));
+	}
+
+	public boolean set(String key, String value, boolean flush) {
+		boolean result = set(key, value);
+		if (flush)
+			flush();
+		return result;
+	}
+
+	public String get(String key, String defaultValue) {
+		return new String(get(key.getBytes(DEFAULT_CHARSET), defaultValue.getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
+	}
+
+	@Nullable
+	public String get(String key) {
+		var val = get(key.getBytes(DEFAULT_CHARSET), null);
+		if (val == null) {
+			return null;
+		}
+		return new String(val, DEFAULT_CHARSET);
 	}
 
 	public boolean set(byte[] key, byte[] value) {
@@ -37,11 +65,18 @@ public class KVExecute {
 	public byte[] get(byte[] key, byte[] defaultValue) {
 		try {
 			byte[] bytes = db.get(key);
-			return bytes != defaultValue ? bytes : null;
+			if (bytes == null) {
+				return defaultValue;
+			}
+			return bytes;
 		} catch (RocksDBException e) {
 			e.printStackTrace();
 			return defaultValue;
 		}
+	}
+
+	public boolean delete(String key) {
+		return delete(key.getBytes(DEFAULT_CHARSET));
 	}
 
 	public boolean delete(byte[] key) {

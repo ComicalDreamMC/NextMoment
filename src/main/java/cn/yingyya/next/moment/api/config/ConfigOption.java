@@ -1,20 +1,5 @@
 package cn.yingyya.next.moment.api.config;
 
-//import java.lang.annotation.ElementType;
-//import java.lang.annotation.Retention;
-//import java.lang.annotation.RetentionPolicy;
-//import java.lang.annotation.Target;
-//
-//@Target(ElementType.FIELD)
-//@Retention(RetentionPolicy.RUNTIME)
-//public @interface ConfigOption {
-//
-//	String value() default "";
-//
-//	ConfigType type() default ConfigType.Object;
-//}
-
-
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigOption<T> {
-
 	public final static ConfigReader<String> StringReader = (path, value, configuration) -> configuration.getString(path, value);
 	public final static ConfigReader<Integer> IntegerReader = (path, value, configuration) -> configuration.getInt(path, value);
 	public final static ConfigReader<Long> LongReader = (path, value, configuration) -> configuration.getLong(path, value);
@@ -75,7 +59,7 @@ public class ConfigOption<T> {
 	}
 
 	public void set(T value) {
-		if (configuration != null) {
+		if (configuration != null && writer != null) {
 			writer.write(path, value, configuration);
 		}
 	}
